@@ -1,0 +1,133 @@
+.card{
+    max-width: 500px;
+    height: max-content;
+    margin: 25px auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    border: 1px solid rgb(173, 173, 173);
+    border-radius: 5px;
+}
+
+.card-header{
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    padding: 10px;
+    height: inherit;
+}
+
+.card-header > h4{
+    margin: 0;
+    padding-left: 10px;
+    
+}
+
+.posttitle {
+    color:#262626;
+    font-size: 16px;
+    padding-left: 10px;
+    text-align: center;
+    font-weight: bolder;
+}
+
+.dottedButton {
+    /* align-items: center; */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    margin-left: auto;
+}
+.card-pic {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+}
+.card-pic img{
+    width: 35px;
+    border-radius: 30px;
+    height: 35px;
+    object-fit: contain;
+}
+
+.card-image img{
+    width: 100%;
+}
+
+.card-content{
+    text-align: left;
+    line-height: 27px;
+    border-bottom: 1px solid rgb(239, 239, 239);
+    display: flex;
+    flex-direction: column;
+}
+
+.card-icon {
+    display: flex;
+    align-items: center;
+    margin: 4px 0 0;
+
+}
+
+.favouriteIcon, .commentIcon, .sendIcon, .saveIcon {
+    padding: 8px;
+}
+
+.saveIcon {
+    border: 0;
+    display: inline-block;
+    font: inherit;
+    font-size: 100%;
+    margin: 0;
+    margin-left: auto;
+    padding: 0;
+}
+
+.saveSVG {
+    padding: 8px;
+}
+
+.likes, .body , .viewcomments{
+    padding: 0 12px;
+}
+
+.heart {
+    color:black;
+}
+
+.viewcommentline {
+    color: #8E8E8E;
+    font-size: 14px;
+    /* padding:15px */
+    padding: 0  12px;
+}
+
+.viewcomment {
+    font-size: 14px;
+    /* padding:15px */
+    padding: 0  12px;
+}
+
+.add-comment{
+    display: flex;
+    align-items: center;
+    padding: 4px 16px 4px 12px;
+    border-top: 1px solid rgb(239, 239, 239);
+    /* padding: 3px 10px; */
+}
+
+.add-comment input{
+    margin: 0;
+    outline: none;
+    border: none;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.comment{
+    border: none;
+    background: none;
+    font-weight: bolder;
+    cursor: pointer;
+    color: #339ce3;
+}

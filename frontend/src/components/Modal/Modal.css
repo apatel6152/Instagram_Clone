@@ -1,0 +1,32 @@
+.darkBg1{
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    position:fixed;
+    
+}
+.centered{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.modalhome {
+    width: 400px;
+    height: auto;
+    background: white;
+    color: white;
+    z-index: 1;
+    border-radius: 16px;
+    position: relative;
+    box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.04);
+  }
+
+  .modal_list {
+    padding: 10px;
+  }
