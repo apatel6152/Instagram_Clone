@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-// import {UserContext} from '../../App';
+import { UserContext } from './../../context/UserContext';
 import logo from '../../icons/logo.png';
 import './SignIn.css';
 import { Link, useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
 const SignIn = () => {
-  // const {state, dispatch} = useContext(UserContext);
+  const { state, dispatch } = useContext(UserContext);
   const { setUserLogin } = useContext(LoginContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -45,15 +45,15 @@ const SignIn = () => {
           notifyA(data.error);
         } else {
           notifyB(data.message);
-          console.log(data);
+          // console.log(data);
           localStorage.setItem('jwt', data.token);
           localStorage.setItem('user', JSON.stringify(data.savedUser));
-          // dispatch({type:"USER", payload: data.savedUser});
+          dispatch({ type: 'USER', payload: data.savedUser });
           // console.log(state);
           setUserLogin(true);
           navigate('/');
         }
-        console.log(data);
+        // console.log(data);
       });
   };
 

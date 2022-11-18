@@ -31,7 +31,8 @@ const Home = () => {
       .then((result) => setData(result))
       .catch((err) => console.log(err));
       
-  }, [navigate,data]);
+  }, [navigate, data]);
+
 
   const openModal = (postid, postedById) => {
     setModalOpen(true);
@@ -130,7 +131,7 @@ const Home = () => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+        "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
       },
       body: JSON.stringify({
         text: text,

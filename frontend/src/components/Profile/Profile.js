@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../../context/UserContext';
 import PostModal from './../PostModal/PostModal';
 import CameraAltRoundedIcon from '@mui/icons-material/CameraAltRounded';
 
@@ -7,6 +8,7 @@ import './Profile.css';
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { state, dispatch } = useContext(UserContext);
   const [myposts, setMyposts] = useState([]);
   const [image, setImage] = useState('');
   const [postModalOpen, setPostModalOpen] = useState(false);
@@ -40,6 +42,7 @@ const Profile = () => {
     if (!token) {
       navigate('./signup');
     }
+
     if (image) {
       const data = new FormData();
       data.append('file', image);
@@ -64,20 +67,19 @@ const Profile = () => {
           })
             .then((res) => res.json())
             .then((result) => {
-              console.log(result);
+              // console.log(result);
               localStorage.setItem(
                 'user',
                 JSON.stringify({ ...user, pic: result.pic })
               );
-              // dispatch({type:"UPDATEPIC",payload:result.pic})
-              // window.location.reload();
+              dispatch({ type: 'UPDATEPIC', payload: result.pic });
             });
         })
         .catch((err) => {
           console.log(err);
         });
     }
-  }, [image, user]);
+  }, [image, dispatch, navigate]);
 
   const openModel = () => {
     // setShowModel(true);
@@ -106,7 +108,6 @@ const Profile = () => {
             <CameraAltRoundedIcon
               sx={{ color: 'blue', width: 30, height: 30, mt: '10px' }}
             />
-           
           </div>
         </div>
 

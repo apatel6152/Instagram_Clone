@@ -2,32 +2,27 @@ import React, { useState } from 'react';
 import logo from '../../icons/logo.png';
 import './Navbar.css';
 // import { LoginContext } from '../../context/LoginContext';
+
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from 'react-router-dom';
 import SearchIcon from '@material-ui/icons/Search';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import Avatar from '@mui/material/Avatar';
-// import M from 'materialize-css';
 import Modal from './../LogOutModal/LogoutModal';
 import SearchModal from './../SearchModal/Searchmodal';
 
-const Navbar = ({ login }) => {
-  // const searchModal = useRef(null);
+const Navbar = ({login}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [logoutmodal, setLogOutModal] = useState(false);
   const user = JSON.parse(localStorage.getItem('user'));
 
-  // useEffect(() => {
-  //   M.Modal.init(searchModal.current);
-  // }, []);
 
   const openModal = () => {
     setModalOpen(true);
     // setPostId(postid);
     // setPostedById(postedById);
   };
-
   const token = localStorage.getItem('jwt');
   const loginStatus = () => {
     if (login || token) {
@@ -52,9 +47,7 @@ const Navbar = ({ login }) => {
             </li>
           </Link>
           <Link to={''}>
-            {/* <Button  variant="contained" color="error">
-              Logout
-            </Button> */}
+       
             <li>
               <LogoutIcon
                 onClick={() => setLogOutModal(true)}
