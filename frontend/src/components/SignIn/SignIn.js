@@ -131,7 +131,7 @@ const SignIn = () => {
             }}
           /> */}
           <div className="forget-password">
-            <Link to="/signup">
+            <Link to="/reset-password">
               <span style={{ cursor: 'pointer', fontSize: '14px' }}>
                 Forgotten your Password?
               </span>
