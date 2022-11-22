@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -22,11 +23,11 @@ const SignUp = () => {
   const passRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;
 
-  useEffect(()=> {
-    if(url) {
+  useEffect(() => {
+    if (url) {
       uploadFields();
     }
-  },[url]);
+  }, [url]);
 
   const uploadPic = () => {
     // console.log(body, image);
@@ -56,30 +57,59 @@ const SignUp = () => {
     }
 
     //sending data to server
-    fetch('http://localhost:5000/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: name,
-        userName: userName,
-        email: email,
-        password: password,
-        pic:url
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          notifyA(data.error);
+    axios
+      .post(
+        `http://localhost:5000/signup`,
+        {
+          name: name,
+          userName: userName,
+          email: email,
+          password: password,
+          pic: url,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            // Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+          },
+        }
+      )
+      .then((result) => {
+        if (result.data.error) {
+          // console.log(data);
+          notifyA(result.data.error);
         } else {
-          notifyB(data.message);
+          notifyB(result.data.message);
         }
         navigate('/signin');
-        console.log(data);
-      });
-  }
+        console.log(result.data);
+      })
+      .catch((err) => console.log(err));
+
+    // fetch('http://localhost:5000/signup', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     name: name,
+    //     userName: userName,
+    //     email: email,
+    //     password: password,
+    //     pic: url,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     if (data.error) {
+    //       notifyA(data.error);
+    //     } else {
+    //       notifyB(data.message);
+    //     }
+    //     navigate('/signin');
+    //     console.log(data);
+    //   });
+  };
 
   const postData = () => {
     if (image) {
@@ -119,7 +149,7 @@ const SignUp = () => {
             <TextField
               type="email"
               hiddenLabel
-              id="filled-hidden-label-small"
+              // id="filled-hidden-label-small"
               placeholder="Email"
               variant="outlined"
               size="small"
@@ -144,7 +174,7 @@ const SignUp = () => {
             <TextField
               type="text"
               hiddenLabel
-              id="filled-hidden-label-small"
+              // id="filled-hidden-label-small"
               placeholder="FullName"
               variant="outlined"
               size="small"
@@ -169,7 +199,7 @@ const SignUp = () => {
             <TextField
               type="text"
               hiddenLabel
-              id="filled-hidden-label-small"
+              // id="filled-hidden-label-small"
               placeholder="Username"
               variant="outlined"
               size="small"
@@ -194,7 +224,7 @@ const SignUp = () => {
             <TextField
               type="password"
               hiddenLabel
-              id="filled-hidden-label-small"
+              // id="filled-hidden-label-small"
               placeholder="password"
               variant="outlined"
               size="small"

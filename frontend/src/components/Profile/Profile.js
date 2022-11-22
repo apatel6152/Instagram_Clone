@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import PostModal from './../PostModal/PostModal';
 import CameraAltRoundedIcon from '@mui/icons-material/CameraAltRounded';
-
+import axios from 'axios';
 import './Profile.css';
 
 const Profile = () => {
@@ -23,17 +23,25 @@ const Profile = () => {
     }
 
     //Fetching all posts
-    fetch('http://localhost:5000/myposts', {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        // console.log(result);
-        setMyposts(result);
+    axios
+      .get(`http://localhost:5000/myposts`, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+        }
       })
+      .then((result) => setMyposts(result.data))
       .catch((err) => console.log(err));
+    // fetch('http://localhost:5000/myposts', {
+    //   headers: {
+    //     Authorization: 'Bearer ' + token,
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {
+    //     // console.log(result);
+    //     setMyposts(result);
+    //   })
+    //   .catch((err) => console.log(err));
   }, [navigate]);
 
   useEffect(() => {

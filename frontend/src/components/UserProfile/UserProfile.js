@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PostModal from '../PostModal/PostModal';
 import Button from '@mui/material/Button';
 // import { LoginContext } from '../../context/LoginContext';
+import axios from 'axios';
 import './UserProfile.css';
 
 const UserProfile = () => {
@@ -27,16 +28,25 @@ const UserProfile = () => {
     }
 
     //Fetching all posts
-    fetch(`http://localhost:5000/user/${userid}`, {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setProfile(data);
+    axios
+      .get(`http://localhost:5000/user/${userid}`, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+        }
       })
+      .then((result) => setProfile(result.data))
       .catch((err) => console.log(err));
+
+    // fetch(`http://localhost:5000/user/${userid}`, {
+    //   headers: {
+    //     Authorization: 'Bearer ' + token,
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     setProfile(data);
+    //   })
+    //   .catch((err) => console.log(err));
   }, [navigate, userid]);
 
   const openModel = () => {

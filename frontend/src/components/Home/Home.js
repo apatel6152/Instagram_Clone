@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate,Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Home.css';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import Modal from './../Modal/Modal';
+import axios from 'axios';
 
 const Home = () => {
   const navigate = useNavigate();
-
+  
   const [data, setData] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [postId, setPostId] = useState();
   const [postedById, setPostedById] = useState();
-  const [comment, setComment] = useState();
-  
+  const [comment, setComment] = useState('');
+
   const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
@@ -21,18 +22,26 @@ const Home = () => {
     if (!token) {
       navigate('./signup');
     }
-    //Fetching all posts
-    fetch('http://localhost:5000/allposts', {
-      headers: {
-        "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
-      },
-    })
-      .then((res) => res.json())
-      .then((result) => setData(result))
-      .catch((err) => console.log(err));
-      
-  }, [navigate, data]);
 
+    //Fetching all posts
+    axios
+      .get(`http://localhost:5000/allposts`, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+        }
+      })
+      .then((result) => setData(result.data))
+      .catch((err) => console.log(err));
+
+    // fetch('http://localhost:5000/allposts', {
+    //   headers: {
+    //     Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => setData(result))
+    //   .catch((err) => console.log(err));
+  }, [navigate, data]);
 
   const openModal = (postid, postedById) => {
     setModalOpen(true);
@@ -41,121 +50,205 @@ const Home = () => {
   };
 
   const deletePost = (postid) => {
-    fetch(`http://localhost:5000/deletepost/${postid}`, {
-      method: 'DELETE',
+
+    axios.delete(`http://localhost:5000/deletepost/${postid}`, {
       headers: {
-        "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
-      },
+        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+      }
     })
-      .then((res) => res.json())
-      .then((result) => {
-        const newData = data.filter((item) => {
-          return item._id !== result._id;
-        });
-        setData(newData);
-      })
-      .catch((err) => console.log(err));
+    .then((result) => {
+      const newData = data.filter((item) => {
+        return item._id !== result.data._id;
+      });
+      setData(newData);
+    })
+    .catch((err) => console.log(err));
+
+    // fetch(`http://localhost:5000/deletepost/${postid}`, {
+    //   method: 'DELETE',
+    //   headers: {
+    //     Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {
+    //     const newData = data.filter((item) => {
+    //       return item._id !== result._id;
+    //     });
+    //     setData(newData);
+    //   })
+    //   .catch((err) => console.log(err));
   };
 
   const likePost = (id) => {
-    fetch('http://localhost:5000/like', {
-      method: 'PUT',
+
+    axios.put(`http://localhost:5000/like`,{ postId: id}, {
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
+        'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
       },
-      body: JSON.stringify({
-        postId: id,
-      }),
     })
-      .then((res) => res.json())
-      .then((result) => {
-        const newData = data.map((item) => {
-          if (item._id === result._id) {
-            // console.log(result)
-            return result;
-          } else {
-            // console.log(item);
-            return item;
-          }
-        });
-        setData(newData);
-        // console.log(data);
-      })
-      .catch((err) => {
-        console.log(err);
+    .then((result) => {
+      const newData = data.map((item) => {
+        if (item._id === result.data._id) {
+          // console.log(result)
+          return result.data;
+        } else {
+          // console.log(item);
+          return item;
+        }
       });
+      setData(newData);
+      // console.log(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    // fetch('http://localhost:5000/like', {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+    //   },
+    //   body: JSON.stringify({
+    //     postId: id,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {
+    //     const newData = data.map((item) => {
+    //       if (item._id === result._id) {
+    //         // console.log(result)
+    //         return result;
+    //       } else {
+    //         // console.log(item);
+    //         return item;
+    //       }
+    //     });
+    //     setData(newData);
+    //     // console.log(data);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
   const unlikePost = (id) => {
-    fetch('http://localhost:5000/unlike', {
-      method: 'PUT',
+
+    axios.put(`http://localhost:5000/unlike`,{ postId: id}, {
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
+        'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
       },
-      body: JSON.stringify({
-        postId: id,
-      }),
     })
-      .then((res) => res.json())
-      .then((result) => {
-        //   console.log(result)
-        const newData = data.map((item) => {
-          if (item._id === result._id) {
-            return result;
-          } else {
-            return item;
-          }
-        });
-        setData(newData);
-      })
-      .catch((err) => {
-        console.log(err);
+    .then((result) => {
+      const newData = data.map((item) => {
+        if (item._id === result.data._id) {
+          // console.log(result)
+          return result.data;
+        } else {
+          // console.log(item);
+          return item;
+        }
       });
+      setData(newData);
+      // console.log(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    // fetch('http://localhost:5000/unlike', {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+    //   },
+    //   body: JSON.stringify({
+    //     postId: id,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {
+    //     //   console.log(result)
+    //     const newData = data.map((item) => {
+    //       if (item._id === result._id) {
+    //         return result;
+    //       } else {
+    //         return item;
+    //       }
+    //     });
+    //     setData(newData);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
-  const [message, setMessage] = useState('');
+  // const [message, setMessage] = useState('');
   const handleChange = (event) => {
     //  Get input value from "event"
-    setMessage(event.target.value);
+    setComment(event.target.value);
   };
   // console.log(message);
   const handleComment = (id) => {
-    makeComment(message, id);
+    makeComment(comment, id);
     setComment('');
   };
 
   const makeComment = (text, postId) => {
-    fetch('http://localhost:5000/comment', {
-      method: 'PUT',
+
+    axios.put(`http://localhost:5000/comment`,{ text: text, postId: postId}, {
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
+        'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
       },
-      body: JSON.stringify({
-        text: text,
-        postId: postId,
-      }),
     })
-      .then((res) => res.json())
-      .then((result) => {
-        //   console.log(result)
-        const newData = data.map((item) => {
-          if (item._id === result._id) {
-            return result;
-          } else {
-            return item;
-          }
-        });
-        setData(newData);
-        
-      })
-      .catch((err) => {
-        console.log(err);
+    .then((result) => {
+      const newData = data.map((item) => {
+        if (item._id === result.data._id) {
+          // console.log(result)
+          return result.data;
+        } else {
+          // console.log(item);
+          return item;
+        }
       });
+      setData(newData);
+      // console.log(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    // fetch('http://localhost:5000/comment', {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+    //   },
+    //   body: JSON.stringify({
+    //     text: text,
+    //     postId: postId,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {
+    //     const newData = data.map((item) => {
+    //       if (item._id === result._id) {
+    //         return result;
+    //       } else {
+    //         return item;
+    //       }
+    //     });
+    //     setData(newData);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
-// console.log(data)
+  // console.log(data)
   return (
     <React.Fragment>
       <div className="home">
@@ -171,21 +264,24 @@ const Home = () => {
                   setModalOpen={setModalOpen}
                 ></Modal>
               )}
-              
+
               {/* card header */}
               <div className="card-header">
                 <div className="card-pic">
-                  <img
-                    src={post ? post.postedBy.pic : undefined}
-                    alt=""
-                  />
+                  <img src={post ? post.postedBy.pic : undefined} alt="" />
                 </div>
                 {/* <div> */}
-                <Link to={post.postedBy._id !== user._id ? "/profile/" + post.postedBy._id : "/profile/"}>
-                  <span className='posttitle'>{post.postedBy.name}</span>
+                <Link
+                  to={
+                    post.postedBy._id !== user._id
+                      ? '/profile/' + post.postedBy._id
+                      : '/profile/'
+                  }
+                >
+                  <span className="posttitle">{post.postedBy.name}</span>
                 </Link>
                 {/* </div> */}
-                
+
                 <button
                   className="dottedButton"
                   onClick={() => {
@@ -339,9 +435,8 @@ const Home = () => {
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="likes">
-                
                   <span> {post.likes.length} Like</span>
                 </div>
                 <div className="body">
@@ -349,9 +444,11 @@ const Home = () => {
                     <b>{post.postedBy.name}</b> {post.body}
                   </span>
                 </div>
-                {post.comments.length !== 0 && <div className="viewcommentline">
-                  View all <span>{post.comments.length}</span> comments
-                </div>}
+                {post.comments.length !== 0 && (
+                  <div className="viewcommentline">
+                    View all <span>{post.comments.length}</span> comments
+                  </div>
+                )}
                 {/* <hr></hr> */}
                 {post.comments.map((comment) => {
                   return (
@@ -372,8 +469,8 @@ const Home = () => {
                   <span className="material-symbols-outlined">mood</span>
                   <input
                     type="text"
-                    onChange={handleChange}
                     value={comment}
+                    onChange={handleChange}
                     placeholder="Add a comment..."
                   />
                   <button

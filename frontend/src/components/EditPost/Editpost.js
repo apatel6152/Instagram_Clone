@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import './Editpost.css';
+import axios from 'axios';
 
 const Editpost = () => {
   const navigate = useNavigate();
@@ -21,27 +22,50 @@ const Editpost = () => {
     //saving post to mongoDb
     // console.log(pid);
     if (url) {
-      fetch(`http://localhost:5000/editpost/${pid}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + localStorage.getItem('jwt'),
-        },
-        body: JSON.stringify({
-          body,
-          pic: url,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            notifyA(data.error);
+      axios
+        .patch(
+          `http://localhost:5000/editpost/${pid}`,
+          { body, pic: url },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+            },
+          }
+        )
+        .then((result) => {
+          if (result.data.error) {
+            // console.log(data);
+            notifyA(result.data.error);
           } else {
+            // console.log(data);
             notifyB('Successfully edited');
             navigate('/');
           }
         })
         .catch((err) => console.log(err));
+
+      // fetch(`http://localhost:5000/editpost/${pid}`, {
+      //   method: 'PATCH',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+      //   },
+      //   body: JSON.stringify({
+      //     body,
+      //     pic: url,
+      //   }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => {
+      //     if (data.error) {
+      //       notifyA(data.error);
+      //     } else {
+      //       notifyB('Successfully edited');
+      //       navigate('/');
+      //     }
+      //   })
+      //   .catch((err) => console.log(err));
     }
   }, [url, navigate, body]);
 

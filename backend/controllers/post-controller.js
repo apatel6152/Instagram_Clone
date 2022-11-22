@@ -11,7 +11,7 @@ const getallposts = async (req, res) => {
 };
 
 const getfriendsposts = async (req, res) => {
-  await POST.find({ postedBy: { $in: [req.user.following] } })
+  await POST.find({ postedBy: { $in: req.user.following } })
     .populate('postedBy', '_id name')
     .populate('comments.postedBy', '_id name')
     .sort('-createdAt')

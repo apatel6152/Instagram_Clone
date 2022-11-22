@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import './Createpost.css';
+import axios from 'axios';
 
 const Createpost = () => {
   const navigate = useNavigate();
@@ -18,29 +19,52 @@ const Createpost = () => {
   useEffect(() => {
     //saving post to mongoDb
     if (url) {
-      fetch('http://localhost:5000/createPost', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + localStorage.getItem('jwt'),
-        },
-        body: JSON.stringify({
-          body,
-          pic: url,
-        }),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.error) {
-            notifyA(data.error);
+      axios
+        .post(
+          `http://localhost:5000/createPost`,
+          { body, pic: url },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+            },
+          }
+        )
+        .then((result) => {
+          if (result.data.error) {
+            // console.log(data);
+            notifyA(result.data.error);
           } else {
+            // console.log(data);
             notifyB('Successfully Posted');
             navigate('/');
           }
         })
         .catch((err) => console.log(err));
+
+      // fetch('http://localhost:5000/createPost', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+      //   },
+      //   body: JSON.stringify({
+      //     body,
+      //     pic: url,
+      //   }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => {
+      //     if (data.error) {
+      //       notifyA(data.error);
+      //     } else {
+      //       notifyB('Successfully Posted');
+      //       navigate('/');
+      //     }
+      //   })
+      //   .catch((err) => console.log(err));
     }
-  }, [url,navigate,body]);
+  }, [url, navigate, body]);
 
   //posting image to cloundnary
   const postDetails = () => {
@@ -49,6 +73,7 @@ const Createpost = () => {
     data.append('file', image);
     data.append('upload_preset', 'insta-clone');
     data.append('clound_name', 'amitinstagramclone');
+    
     fetch('https://api.cloudinary.com/v1_1/amitinstagramclone/image/upload', {
       method: 'POST',
       body: data,
@@ -100,10 +125,7 @@ const Createpost = () => {
       <div className="details">
         <div className="card-header">
           <div className="card-pic">
-            <img
-              src={user.pic}
-              alt="post"
-            />
+            <img src={user.pic} alt="post" />
           </div>
           <h5>{user.name}</h5>
         </div>

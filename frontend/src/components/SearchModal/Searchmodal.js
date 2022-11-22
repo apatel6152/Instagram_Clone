@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 import SearchIcon from '@material-ui/icons/Search';
 import { Link } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
+import axios from 'axios';
 
 const Modal = ({ setModalOpen }) => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -13,19 +14,33 @@ const Modal = ({ setModalOpen }) => {
 
   const fetchUsers = (query) => {
     setSearch(query);
-    fetch('http://localhost:5000/search-users', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query,
-      }),
-    })
-      .then((res) => res.json())
-      .then((results) => {
-        setUserDetails(results.user);
-      });
+
+    axios
+      .post(
+        `http://localhost:5000/search-users`,
+        { query },
+        {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+          },
+        }
+      )
+      .then((result) => setUserDetails(result.data.user))
+      .catch((err) => console.log(err));
+
+    // fetch('http://localhost:5000/search-users', {
+    //   method: 'post',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     query,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((results) => {
+    //     setUserDetails(results.user);
+    //   });
   };
   return (
     <div className="searchmodal">

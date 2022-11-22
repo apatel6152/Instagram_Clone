@@ -4,6 +4,7 @@ import './FriendPost.css';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import Modal from '../Modal/Modal';
+import axios from 'axios';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -22,16 +23,26 @@ const Home = () => {
     // }
 
     //Fetching all posts
-    fetch('http://localhost:5000/friendposts', {
-      headers: {
-        "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
-      },
-    })
-      .then((res) => res.json())
-      .then((result) => setData(result))
+    axios
+      .get(`http://localhost:5000/friendposts`, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+        }
+      })
+      .then((result) => setData(result.data))
       .catch((err) => console.log(err));
+
+    // fetch('http://localhost:5000/friendposts', {
+    //   headers: {
+    //     "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {setData(result)})
+    //   .catch((err) => console.log(err));
   }, []);
-  console.log(data);
+
+  // console.log(data);
   const openModal = (postid, postedById) => {
     setModalOpen(true);
     setPostId(postid);
@@ -40,116 +51,195 @@ const Home = () => {
   // console.log(data);
 
   const deletePost = (postid) => {
-    fetch(`http://localhost:5000/deletepost/${postid}`, {
-      method: 'DELETE',
+    axios.delete(`http://localhost:5000/deletepost/${postid}`, {
       headers: {
-        "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
-      },
+        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+      }
     })
-      .then((res) => res.json())
-      .then((result) => {
-        const newData = data.filter((item) => {
-          return item._id !== result._id;
-        });
-        setData(newData);
-      })
-      .catch((err) => console.log(err));
+    .then((result) => {
+      const newData = data.filter((item) => {
+        return item._id !== result.data._id;
+      });
+      setData(newData);
+    })
+    .catch((err) => console.log(err));
+    // fetch(`http://localhost:5000/deletepost/${postid}`, {
+    //   method: 'DELETE',
+    //   headers: {
+    //     "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {
+    //     const newData = data.filter((item) => {
+    //       return item._id !== result._id;
+    //     });
+    //     setData(newData);
+    //   })
+    //   .catch((err) => console.log(err));
   };
 
   const likePost = (id) => {
-    fetch('http://localhost:5000/like', {
-      method: 'PUT',
+    axios.put(`http://localhost:5000/like`,{ postId: id}, {
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
+        'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
       },
-      body: JSON.stringify({
-        postId: id,
-      }),
     })
-      .then((res) => res.json())
-      .then((result) => {
-        //   console.log(result)
-        const newData = data.map((item) => {
-          if (item._id === result._id) {
-            return result;
-          } else {
-            return item;
-          }
-        });
-        setData(newData);
-      })
-      .catch((err) => {
-        console.log(err);
+    .then((result) => {
+      const newData = data.map((item) => {
+        if (item._id === result.data._id) {
+          // console.log(result)
+          return result.data;
+        } else {
+          // console.log(item);
+          return item;
+        }
       });
+      setData(newData);
+      // console.log(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    // fetch('http://localhost:5000/like', {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
+    //   },
+    //   body: JSON.stringify({
+    //     postId: id,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {
+    //     //   console.log(result)
+    //     const newData = data.map((item) => {
+    //       if (item._id === result._id) {
+    //         return result;
+    //       } else {
+    //         return item;
+    //       }
+    //     });
+    //     setData(newData);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
   const unlikePost = (id) => {
-    fetch('http://localhost:5000/unlike', {
-      method: 'PUT',
+    axios.put(`http://localhost:5000/unlike`,{ postId: id}, {
       headers: {
         'Content-Type': 'application/json',
-        "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
+        'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
       },
-      body: JSON.stringify({
-        postId: id,
-      }),
     })
-      .then((res) => res.json())
-      .then((result) => {
-        //   console.log(result)
-        const newData = data.map((item) => {
-          if (item._id === result._id) {
-            return result;
-          } else {
-            return item;
-          }
-        });
-        setData(newData);
-      })
-      .catch((err) => {
-        console.log(err);
+    .then((result) => {
+      const newData = data.map((item) => {
+        if (item._id === result.data._id) {
+          // console.log(result)
+          return result.data;
+        } else {
+          // console.log(item);
+          return item;
+        }
       });
+      setData(newData);
+      // console.log(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    // fetch('http://localhost:5000/unlike', {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     "Authorization": 'Bearer ' + localStorage.getItem('jwt'),
+    //   },
+    //   body: JSON.stringify({
+    //     postId: id,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {
+    //     //   console.log(result)
+    //     const newData = data.map((item) => {
+    //       if (item._id === result._id) {
+    //         return result;
+    //       } else {
+    //         return item;
+    //       }
+    //     });
+    //     setData(newData);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
-  const [message, setMessage] = useState('');
+  // const [message, setMessage] = useState('');
   const handleChange = (event) => {
     //  Get input value from "event"
-    setMessage(event.target.value);
+    setComment(event.target.value);
   };
   // console.log(message);
   const handleComment = (id) => {
-    makeComment(message, id);
+    makeComment(comment, id);
     setComment('');
   };
 
   const makeComment = (text, postId) => {
-    fetch('http://localhost:5000/comment', {
-      method: 'PUT',
+    axios.put(`http://localhost:5000/comment`,{ text: text, postId: postId}, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+        'Authorization': 'Bearer ' + localStorage.getItem('jwt'),
       },
-      body: JSON.stringify({
-        text: text,
-        postId: postId,
-      }),
     })
-      .then((res) => res.json())
-      .then((result) => {
-        //   console.log(result)
-        const newData = data.map((item) => {
-          if (item._id === result._id) {
-            return result;
-          } else {
-            return item;
-          }
-        });
-        setData(newData);
-      })
-      .catch((err) => {
-        console.log(err);
+    .then((result) => {
+      const newData = data.map((item) => {
+        if (item._id === result.data._id) {
+          // console.log(result)
+          return result.data;
+        } else {
+          // console.log(item);
+          return item;
+        }
       });
+      setData(newData);
+      // console.log(data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    // fetch('http://localhost:5000/comment', {
+    //   method: 'PUT',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+    //   },
+    //   body: JSON.stringify({
+    //     text: text,
+    //     postId: postId,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((result) => {
+    //     //   console.log(result)
+    //     const newData = data.map((item) => {
+    //       if (item._id === result._id) {
+    //         return result;
+    //       } else {
+    //         return item;
+    //       }
+    //     });
+    //     setData(newData);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
  

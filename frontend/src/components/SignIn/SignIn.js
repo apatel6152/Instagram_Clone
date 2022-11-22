@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { LoginContext } from './../../context/LoginContext';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 
 const SignIn = () => {
   const { state, dispatch } = useContext(UserContext);
@@ -29,32 +30,61 @@ const SignIn = () => {
     }
 
     // Sending data to server
-    fetch('http://localhost:5000/signin', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          notifyA(data.error);
-        } else {
-          notifyB(data.message);
+    axios
+        .post(
+          `http://localhost:5000/signin`,
+          { email: email,
+            password: password },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              // Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+            },
+          }
+        )
+        .then((result) => {
+          if (result.data.error) {
+            // console.log(data);
+            notifyA(result.data.error);
+          } else {
+            notifyB(result.data.message);
           // console.log(data);
-          localStorage.setItem('jwt', data.token);
-          localStorage.setItem('user', JSON.stringify(data.savedUser));
-          dispatch({ type: 'USER', payload: data.savedUser });
+          localStorage.setItem('jwt', result.data.token);
+          localStorage.setItem('user', JSON.stringify(result.data.savedUser));
+          dispatch({ type: 'USER', payload: result.data.savedUser });
           // console.log(state);
           setUserLogin(true);
           navigate('/');
-        }
-        // console.log(data);
-      });
+          }
+        })
+        .catch((err) => console.log(err));
+
+    // fetch('http://localhost:5000/signin', {
+    //   method: 'post',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     email: email,
+    //     password: password,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     if (data.error) {
+    //       notifyA(data.error);
+    //     } else {
+    //       notifyB(data.message);
+    //       // console.log(data);
+    //       localStorage.setItem('jwt', data.token);
+    //       localStorage.setItem('user', JSON.stringify(data.savedUser));
+    //       dispatch({ type: 'USER', payload: data.savedUser });
+    //       // console.log(state);
+    //       setUserLogin(true);
+    //       navigate('/');
+    //     }
+    //     // console.log(data);
+    //   });
   };
 
   return (
@@ -74,8 +104,9 @@ const SignIn = () => {
               }}
             /> */}
             <TextField
+              type="email"
               hiddenLabel
-              id="filled-hidden-label-small"
+              // id="filled-hidden-label-small"
               placeholder="Email Address"
               variant="outlined"
               size="small"
@@ -90,7 +121,7 @@ const SignIn = () => {
             <TextField
               type="password"
               hiddenLabel
-              id="filled-hidden-label-small"
+              // id="filled-hidden-label-small"
               placeholder="password"
               variant="outlined"
               size="small"

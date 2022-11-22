@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 
 const UpdatePassword = () => {
   const navigate = useNavigate();
@@ -18,26 +19,47 @@ const UpdatePassword = () => {
   console.log(token);
   const postData = () => {
     // Sending data to server
-    fetch('http://localhost:5000/update-password', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        password: password,
-        token: token,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          notifyA(data.error);
+    axios
+      .post(
+        `http://localhost:5000/update-password`,
+        { password: password, token: token },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            // Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+          },
+        }
+      )
+      .then((result) => {
+        if (result.data.error) {
+          notifyA(result.data.error);
         } else {
-          notifyB(data.message);
+          // console.log(data);
+          notifyB(result.data.message);
           navigate('/signin');
         }
-        // console.log(data);
-      });
+      })
+      .catch((err) => console.log(err));
+    // fetch('http://localhost:5000/update-password', {
+    //   method: 'post',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     password: password,
+    //     token: token,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     if (data.error) {
+    //       notifyA(data.error);
+    //     } else {
+    //       notifyB(data.message);
+    //       navigate('/signin');
+    //     }
+    //     // console.log(data);
+    //   });
   };
 
   return (

@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import axios from 'axios';
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -24,25 +25,47 @@ const ResetPassword = () => {
     }
 
     // Sending data to server
-    fetch('http://localhost:5000/reset-password', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          notifyA(data.error);
-        } else {
-          notifyB(data.message);
-          navigate('/signin');
-        }
-        // console.log(data);
-      });
+    axios
+        .post(
+          `http://localhost:5000/reset-password`,
+          { email:email },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              // Authorization: 'Bearer ' + localStorage.getItem('jwt'),
+            },
+          }
+        )
+        .then((result) => {
+          if (result.data.error) {
+            notifyA(result.data.error);
+          } else {
+            // console.log(data);
+            notifyB(result.data.message);
+            navigate('/signin');
+          }
+        })
+        .catch((err) => console.log(err));
+
+    // fetch('http://localhost:5000/reset-password', {
+    //   method: 'post',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     email: email,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     if (data.error) {
+    //       notifyA(data.error);
+    //     } else {
+    //       notifyB(data.message);
+    //       navigate('/signin');
+    //     }
+    //     // console.log(data);
+    //   });
   };
 
   return (
